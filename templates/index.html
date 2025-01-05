@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>近代史复习</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        pre {
+            white-space: pre-wrap; /* 保留空白符序列，并允许自动换行 */
+            word-wrap: break-word;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin: 10px 0;
+        }
+        form {
+            margin-top: 20px;
+        }
+        input[type="radio"], input[type="checkbox"] {
+            margin-right: 5px;
+        }
+        label {
+            margin-right: 10px;
+        }
+        input[type="submit"] {
+            background-color: #5cb85c;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-transform: uppercase;
+            cursor: pointer;
+        }
+        input[type="submit"]:hover {
+            background-color: #4cae4c;
+        }
+        h2 {
+            color: #333;
+            margin-top: 20px;
+        }
+        a {
+            display: inline-block;
+            background-color: #337ab7;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            margin-top: 10px;
+        }
+        a:hover {
+            background-color: #286090;
+        }
+        footer {
+            background: linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet);
+            color: transparent;
+            text-align: center;
+            padding: 5px 0;
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            z-index:-1
+        }
+    </style>
+    <script>
+        function submitForm() {
+            var form = document.getElementById('questionForm');
+            form.submit();
+        }
+        function nextQuestion() {
+            var mode = '{{ mode }}';
+            var nextQuestionUrl = '/mode/' + mode;
+            window.location.href = nextQuestionUrl;
+        }
+    </script>
+</head>
+<body>
+    <h1>题目</h1>
+    <button onclick="location.href='/mode/single'">单选题模式</button>
+    <button onclick="location.href='/mode/multiple'">多选题模式</button>
+    <button onclick="location.href='/mode/judgement'">判断题模式</button>
+    <pre>{{ question }}</pre>
+    <form id="questionForm" action="/" method="post">
+        {% if mode == 'single' %}
+            {% for option in ['A', 'B', 'C', 'D', 'E'] %}
+                <input type="radio" id="option_{{ option }}" name="answer" value="{{ option }}">
+                <label for="option_{{ option }}">{{ option }}</label>
+            {% endfor %}
+        {% elif mode == 'multiple' %}
+            {% for option in ['A', 'B', 'C', 'D', 'E'] %}
+                <input type="checkbox" id="option_{{ option }}" name="answer" value="{{ option }}">
+                <label for="option_{{ option }}">{{ option }}</label>
+            {% endfor %}
+        {% elif mode == 'judgement' %}
+            <input type="radio" id="option_√" name="answer" value="√">
+            <label for="option_√">√</label>
+            <input type="radio" id="option_×" name="answer" value="×">
+            <label for="option_×">×</label>
+        {% endif %}
+        <input type="submit" value="Submit" onclick="submitForm();">
+        <input type="hidden" name="question_index" value="{{ question_index }}">
+        <input type="hidden" name="mode" value="{{ mode }}">
+    </form>
+    {% if correct_question %}
+        <h2>答案:</h2>
+        <pre>{{ correct_question }}</pre>
+        <p>你的答案：{{ user_answers }}</p>
+        <button onclick="nextQuestion()">下一题</button>
+    {% endif %}
+    <footer>
+        <p>&copy;made by fq && 题库由T M L整理</p>
+    </footer>
+</body>
+</html>
